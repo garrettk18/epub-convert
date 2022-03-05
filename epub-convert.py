@@ -2,6 +2,7 @@
 
 #Convert EPUB files to either single HTML or text files.
 #They can then be read on refreshable Braille displays, such as the Brailliant series from HumanWare orr the Braille Edge by Hims.
+#Also works with the Victor Reader Trek/Stream by Humanware.
 #Requires pypandoc (shoutouts to @TheQuinbox on twitter!)
 #Try pip3 install pypandoc
 
@@ -44,6 +45,9 @@ os.chdir(input_dir)
 epub_files = list(pathlib.Path('.').rglob('*.[eE][pP][uU][bB]'))
 file_count=len(epub_files)
 print(f'Found {file_count} to convert\n')
+
+#FIXME: Skip files that have already been converted, check file modification times
+
 for file in epub_files:
     output_name = os.path.join(output_dir, file.__str__()[:-4] + file_format)
     os.makedirs(os.path.dirname(output_name), exist_ok=True)
