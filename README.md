@@ -2,7 +2,7 @@
 
 ## What Is It?
 
-This is a python script that converts a directory full of .epub files into either HTML or text files. This allows the reading of books in nEPUB on devices such as:
+This is a python script that converts a directory full of .epub files into either HTML or text files. This allows the reading of books in EPUB on devices such as:
 
 * The Brailliant BI series from Humanware (e.g., [BI 40x](https://store.humanware.com/hus/brailliant-bi-40x-braille-display.html)
 * The first-generation Victor Reader Stream from Humanware
