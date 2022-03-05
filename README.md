@@ -23,9 +23,8 @@ This is a python script that converts a directory full of .epub files into eithe
 
 ### Linux (Debian, Ubuntu)
 
-1. `sudo apt install python3-pip pandoc`
-2. `sudo pip3 install pypandoc`
-3. See steps 5-7 above, and enjoy!
+1. `sudo apt install python3-pypandoc pandoc`
+2. See steps 5-7 above, and enjoy!
 
 ## Command line options
 
