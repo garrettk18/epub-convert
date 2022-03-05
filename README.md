@@ -4,8 +4,8 @@
 
 This is a python script that converts a directory full of .epub files into either HTML or text files. This allows the reading of books in nEPUB on devices such as:
 
-* The Brailliant BI series by Humanware
-* The Victor Reader Stream/Trek series by Humanware
+* The Brailliant BI series by Humanware (e.g., [BI 40x](https://store.humanware.com/hus/brailliant-bi-40x-braille-display.html)
+* The [Victor Reader Stream](https://www.humanware.com/microsite/stream/index.html)/Trek series by Humanware
 * The Braille Edge by Himms
 * Anything else that supports HTML or ASCII text files
 
@@ -21,4 +21,17 @@ This is a python script that converts a directory full of .epub files into eithe
 6. Run epub-convert.py
 7. Look in the `html conversions` directory for your yummy books!
 
+### Linux (Debian, Ubuntu)
+1. `sudo apt install python3-pip pandoc`
+2. `sudo pip3 install pypandoc`
+3. See steps 5-7 above, and enjoy!
+
+##Command line options
+
+* -T: Conver to text files instead of HTML
+* -i: Input directory
+* -o: output directory
+
+## Credits
+Thanks to @thunderdrop for implementing the conversion progress support. @ultrasound1372 has also been invaluable with his suggestions for improvement.
 
