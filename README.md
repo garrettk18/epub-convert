@@ -22,11 +22,12 @@ This is a python script that converts a directory full of .epub files into eithe
 7. Look in the `html conversions` directory for your yummy books!
 
 ### Linux (Debian, Ubuntu)
+
 1. `sudo apt install python3-pip pandoc`
 2. `sudo pip3 install pypandoc`
 3. See steps 5-7 above, and enjoy!
 
-##Command line options
+## Command line options
 
 * -T: Conver to text files instead of HTML
 * -i: Input directory
