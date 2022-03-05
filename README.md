@@ -4,8 +4,8 @@
 
 This is a python script that converts a directory full of .epub files into either HTML or text files. This allows the reading of books in nEPUB on devices such as:
 
-* The Brailliant BI series by Humanware (e.g., [BI 40x](https://store.humanware.com/hus/brailliant-bi-40x-braille-display.html)
-* The [Victor Reader Stream](https://www.humanware.com/microsite/stream/index.html)/Trek series by Humanware
+* The Brailliant BI series from Humanware (e.g., [BI 40x](https://store.humanware.com/hus/brailliant-bi-40x-braille-display.html)
+* The first-generation Victor Reader Stream from Humanware
 * The Braille Edge by Himms
 * Anything else that supports HTML or ASCII text files
 
