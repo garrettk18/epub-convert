@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 #Convert EPUB files to either single HTML or text files.
-#They can then be read on refreshable Braille displays, such as the Brailliant series from HumanWare orr the Braille Edge by Hims.
+#They can then be read on refreshable Braille displays, such as the Brailliant series from HumanWare or the Braille Edge by Hims.
 #Also works with the Victor Reader Trek/Stream by Humanware.
 #Requires pypandoc (shoutouts to @TheQuinbox on twitter!)
 #Try pip3 install pypandoc
