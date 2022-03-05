@@ -6,7 +6,7 @@ This is a python script that converts a directory full of .epub files into eithe
 
 * The Brailliant BI series from Humanware (e.g., [BI 40x](https://store.humanware.com/hus/brailliant-bi-40x-braille-display.html)
 * The first-generation Victor Reader Stream from Humanware
-* The Braille Edge by Himms
+* The Braille Edge by Hims
 * Anything else that supports HTML or ASCII text files
 
 ## Setup
