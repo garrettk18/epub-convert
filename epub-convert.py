@@ -9,22 +9,52 @@
 
 #usage: epub-convert.py [-i input_dir] [-o output_dir] [-T]
 
-import os
-import os.path
 import argparse
-import pathlib
+import functools
+import os
+from pathlib import Path
 import pypandoc
-import time
 import sys
+import time
+
+@functools.total_ordering
+class Ebook:
+    """Represents a book to be converted.
+    
+    Rich comparison will order on the file size.
+    bool determines whether this book should be converted.
+    """
+    def __init__(self, book_path: Path, output_ext: str, input_base: Path, output_base: Path):
+        self.book_path=book_path.resolve() # basically absolute
+        # self.dest_path is the output filename, pathlib makes this elegant.
+        self.dest_path=output_base.resolve()/self.book_path.relative_to(input_base.resolve()).with_suffix('.'+output_ext)
+        self.in_stat=self.book_path.stat()
+        if self.dest_path.exists(): self.out_stat=self.dest_path.stat()
+        else: self.out_stat=None
+    
+    def __eq__(self, other):
+        return self.in_stat.st_size==other.in_stat.st_size
+    
+    def __lt__(self, other):
+        return self.in_stat.st_size<other.in_stat.st_size
+    
+    def __bool__(self):
+        """
+        Should this book be converted?
+        True if destination does not exist or if source modtime is newer.
+        """
+        if self.out_stat is not None and self.in_stat.st_mtime<self.out_stat.st_mtime: return False
+        else: return True
+        
 
 # Increment these on successful or failed conversion respectively.
 progress=0
 errors=0
-input_dir='.'
+input_dir=Path('.')
 file_format='html'
-output_dir = os.path.join('.', 'html conversions')
+output_dir=input_dir/'html conversions'
 #Since we change directories later, keep track of the current directory now so the output dir is relative to *that* instead of the input directory.
-basedir=os.getcwd()
+basedir=Path.cwd().resolve()
 parser = argparse.ArgumentParser(description='Convert a directory of EPUB files into single HTML or text files')
 parser.add_argument('-t', '--text', help='Output text files instead of HTML', action='store_true')
 parser.add_argument('-i', '--input', help='Directory to search for epub files (default .)')
@@ -32,36 +62,67 @@ parser.add_argument('-o', '--output', help='output directory (default: ./[html|t
 args = parser.parse_args()
 
 if args.input:
-    input_dir = args.input
+    input_dir = Path(args.input)
 if args.output:
-    output_dir = os.path.join(basedir, args.output)
+    output_dir = basedir/args.output
 if args.text:
     if not args.output:
-        output_dir = os.path.join('.', 'txt conversions')
+        output_dir = basedir/'txt conversions'
     file_format= 'txt'
     print('Converting to text files')
+input_dir=input_dir.resolve()
+if not output_dir.exists(): output_dir.mkdir(parents=True, exist_ok=True)
+output_dir=output_dir.resolve()
 
-os.chdir(input_dir)
-epub_files = list(pathlib.Path('.').rglob('*.[eE][pP][uU][bB]'))
+
+def epubs(base: Path, exclude: Path=None):
+    """
+    Recursively yields all epub files to be converted as Path instances
+    
+    The only filtering done here is to avoid traversing into the directory given by exclude
+    """
+    for item in base.iterdir():
+        if item.is_dir():
+            if exclude is not None and item.is_relative_to(exclude):
+                continue
+            else:
+                yield from epubs(item, exclude)
+        elif item.is_file() and item.suffix.lower()=='.epub':
+            yield item
+
+epub_files = []
+for i in epubs(input_dir, output_dir):
+    book=Ebook(i, file_format, input_dir, output_dir)
+    if bool(book): epub_files.append(book)
+epub_files.sort() # smallest first
 file_count=len(epub_files)
-print(f'Found {file_count} to convert\n')
+if file_count<=0:
+    print('All conversions are up to date.')
+    sys.exit()
 
-#FIXME: Skip files that have already been converted, check file modification times
-
-for file in epub_files:
-    output_name = os.path.join(output_dir, file.__str__()[:-4] + file_format)
-    os.makedirs(os.path.dirname(output_name), exist_ok=True)
-    print(f'{progress+1}/{file_count}: Converting {file} to {output_name}')
+print(f'Have {file_count} to convert')
+for book in epub_files:
+    file=book.book_path # easier access
+    output_file=book.dest_path
+    # .parent is used because mkdir needs the path to be a directory
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    # some things to print
+    pretty_input_file=str(file.relative_to(input_dir))
+    pretty_output_file=str(output_dir.parts[-1]/output_file.relative_to(output_dir))
+    print(f'{progress+1}/{file_count}: Converting {pretty_input_file} to {pretty_output_file}')
     conversion_result = None
     convert_start = time.perf_counter_ns()
     #If pandoc barfs on conversion, warn the user and skip to the next file.
     try:
         #This next bit of silliness is because pandoc uses 'plain' instead of 'txt' as a format name.
         if args.text:
-            conversion_result = pypandoc.convert_file(file.__str__(), 'plain', outputfile=output_name, extra_args=['-s'])
+            conversion_result = pypandoc.convert_file(str(file), 'plain', outputfile=str(output_file), extra_args=['-s'])
         else:
-            conversion_result = pypandoc.convert_file(file.__str__(), file_format, outputfile=output_name, extra_args=['-s'])
+            conversion_result = pypandoc.convert_file(str(file), file_format, outputfile=str(output_file), extra_args=['-s'])
         assert(conversion_result == '')
+        if output_file.exists():
+            # copy the times
+            os.utime(output_file, ns=(book.in_stat.st_atime_ns, book.in_stat.st_mtime_ns))
     except RuntimeError as e:
         print(f'Error converting file {file}; output is likely malformed or corrupt:\n{e.args}', file=sys.stderr)
         errors+=1
