@@ -120,9 +120,6 @@ for book in epub_files:
         else:
             conversion_result = pypandoc.convert_file(str(file), file_format, outputfile=str(output_file), extra_args=['-s'])
         assert(conversion_result == '')
-        if output_file.exists() and 'linux' not in sys.platform:
-            # copy the times, if *NOT* running on Linux.
-            os.utime(output_file, ns=(book.in_stat.st_atime_ns, book.in_stat.st_mtime_ns))
     except RuntimeError as e:
         print(f'Error converting file {file}; output is likely malformed or corrupt:\n{e.args}', file=sys.stderr)
         errors+=1
