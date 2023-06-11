@@ -1,5 +1,6 @@
 [project]
 name = "epub-convert"
+version = "1.0.0"
 
 [build-system]
 requires = ["setuptools"]
