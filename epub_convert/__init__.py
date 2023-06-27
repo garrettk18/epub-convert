@@ -46,7 +46,7 @@ class Ebook:
         if self.out_stat is not None and self.in_stat.st_mtime<self.out_stat.st_mtime: return False
         else: return True
         
-def epub_convert():
+def main():
     # Increment these on successful or failed conversion respectively.
     progress=0
     errors=0
