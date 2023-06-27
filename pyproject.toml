@@ -2,3 +2,10 @@
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "epub_convert"
+version = "1.0"
+
+[project.scripts]
+epub-convert = "epub_convert:main"
+
