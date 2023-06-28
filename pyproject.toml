@@ -5,6 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "epub_convert"
 version = "1.0"
+description = "A small utility to convert epub files into single HTML documents, single for reading on several Braille displays and book reading devices for the blind."
+readme = "README.md"
+license = {file = "LICENSE"}
 
 [project.scripts]
 epub-convert = "epub_convert:main"
